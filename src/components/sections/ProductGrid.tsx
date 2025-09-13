@@ -18,28 +18,90 @@ export default function ProductGrid({ category }: ProductGridProps) {
     variables: {
       page: 1,
       limit: 24,
-      filter: category ? { category } : {},
+      ...(category && { filter: { category } }), // Only add filter if category exists
     },
     fetchPolicy: "network-only",
+    errorPolicy: "all", // Show partial data even if there are errors
   });
 
-  if (loading) return <div className="p-10 text-lg">Loading...</div>;
-  if (error) return <div className="p-10 text-red-500">Error: {error.message}</div>;
+  if (loading) {
+    return (
+      <div className="p-6">
+        <div className="flex justify-center items-center min-h-[400px]">
+          <div className="text-lg text-gray-600">Loading products...</div>
+        </div>
+      </div>
+    );
+  }
 
-  const products: Product[] = data?.products?.items || [];
+  if (error) {
+    return (
+      <div className="p-6">
+        <div className="text-center py-10">
+          <div className="text-red-500 text-lg mb-2">Error loading products</div>
+          <div className="text-gray-600 text-sm">{error.message}</div>
+        </div>
+      </div>
+    );
+  }
+
+  // Extract products based on your GraphQL schema structure
+  const products: Product[] = data?.products?.products || [];
 
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-semibold mb-4">
-        {category ? `${category} Collection` : "All Products"}
-      </h2>
+      <div className="mb-6">
+        <h2 className="text-2xl font-semibold text-gray-900">
+          {category ? `${category} Collection` : "All Products"}
+        </h2>
+        {products.length > 0 && (
+          <p className="text-gray-600 mt-1">
+            {data?.products?.totalProducts || products.length} products found
+          </p>
+        )}
+      </div>
+
       {products.length === 0 ? (
-        <p className="text-gray-500">No products found.</p>
+        <div className="text-center py-20">
+          <div className="text-gray-400 mb-4">
+            <svg
+              className="mx-auto h-16 w-16"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1}
+                d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2 2v-5m16 0H4m16 0l-2-2m2 2l-2 2M4 13l2-2m-2 2l2 2"
+              />
+            </svg>
+          </div>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">
+            No products found
+          </h3>
+          <p className="text-gray-600">
+            {category
+              ? `No products available in the ${category} category.`
+              : "No products are currently available."}
+          </p>
+        </div>
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {products.map((p) => (
-            <ProductCard key={p.id} product={p} />
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+          {products.map((product) => (
+            <ProductCard key={product.id} product={product} />
           ))}
+        </div>
+      )}
+
+      {/* Pagination info */}
+      {data?.products && products.length > 0 && (
+        <div className="mt-8 text-center text-gray-600 text-sm">
+          Page {data.products.currentPage} of {data.products.totalPages}
+          {data.products.hasNextPage && (
+            <span className="ml-2 text-blue-600">More products available</span>
+          )}
         </div>
       )}
     </div>
