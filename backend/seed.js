@@ -22,12 +22,14 @@ const seedProducts = async () => {
         brand: "Lenskart Air",
         category: "eyeglasses",
         price: 1799,
+        originalPrice: 1899,
         discount: 5,
         frameColor: "Grey",
         description:
           "Premium full-rim rectangular eyeglasses with lightweight frame.",
         stock: 50,
         isNewArrival: true,
+        isFeatured: true, // Added this
         isActive: true,
         images: [
           {
@@ -45,11 +47,13 @@ const seedProducts = async () => {
         brand: "Vincent Chase",
         category: "sunglasses",
         price: 3499,
+        originalPrice: 3499,
         discount: 0,
         frameColor: "Black",
         description: "Stylish polarized sunglasses for all-day outdoor wear.",
         stock: 30,
         isNewArrival: true,
+        isFeatured: true, // Added this
         isActive: true,
         images: [
           {
@@ -65,11 +69,13 @@ const seedProducts = async () => {
         brand: "Ray-Ban",
         category: "sunglasses",
         price: 5999,
+        originalPrice: 6666,
         discount: 10,
         frameColor: "Gold",
         description: "Iconic aviator sunglasses with UV protection lenses.",
         stock: 20,
         isNewArrival: false,
+        isFeatured: true, // Added this
         isActive: true,
         images: [
           {
@@ -85,11 +91,13 @@ const seedProducts = async () => {
         brand: "Oakley",
         category: "sunglasses",
         price: 4999,
+        originalPrice: 5262,
         discount: 5,
         frameColor: "Blue",
         description: "Durable sports sunglasses with polarized lenses.",
         stock: 25,
         isNewArrival: true,
+        isFeatured: true, // Added this
         isActive: true,
         images: [
           {
@@ -107,16 +115,17 @@ const seedProducts = async () => {
         brand: "KidSafe",
         category: "kids-eyeglasses",
         price: 1299,
+        originalPrice: 1443,
         discount: 10,
         frameColor: "Blue",
         description: "Fun and durable round eyeglasses for active kids.",
         stock: 40,
         isNewArrival: false,
+        isFeatured: true, // Added this
         isActive: true,
         images: [
           {
             url: "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/480x480/9df78eab33525d08d6e5fb8d27136e95//l/i/grey-transparent-gray-full-rim-rectangle-lenskart-air-signia-la-e14573-c3-eyeglasses_g_2478_09-july.jpg",
-            alt: "Kids Sporty Rectangle Eyeglasses",
             alt: "Kids Round Eyeglasses",
             isPrimary: true,
           },
@@ -128,11 +137,13 @@ const seedProducts = async () => {
         brand: "KidSafe",
         category: "kids-eyeglasses",
         price: 1499,
+        originalPrice: 1499,
         discount: 0,
         frameColor: "Red",
         description: "Comfortable rectangular frame ideal for sporty kids.",
         stock: 25,
         isNewArrival: true,
+        isFeatured: false, // Not featured
         isActive: true,
         images: [
           {
@@ -150,12 +161,14 @@ const seedProducts = async () => {
         brand: "BluGuard",
         category: "screen-glasses",
         price: 1999,
+        originalPrice: 2221,
         discount: 10,
         frameColor: "Black",
         description:
           "Protects eyes from blue light and reduces digital eye strain.",
         stock: 40,
         isNewArrival: true,
+        isFeatured: true, // Added this
         isActive: true,
         images: [
           {
@@ -171,11 +184,13 @@ const seedProducts = async () => {
         brand: "Lenskart Blu",
         category: "screen-glasses",
         price: 1499,
+        originalPrice: 1578,
         discount: 5,
         frameColor: "Transparent",
         description: "Zero power glasses with advanced blue light protection.",
         stock: 50,
         isNewArrival: false,
+        isFeatured: true, // Added this
         isActive: true,
         images: [
           {
@@ -193,11 +208,13 @@ const seedProducts = async () => {
         brand: "Bausch & Lomb",
         category: "contact-lenses",
         price: 999,
+        originalPrice: 1051,
         discount: 5,
         frameColor: "Transparent",
         description: "Daily wear contact lenses for clear and comfortable vision.",
         stock: 100,
         isNewArrival: true,
+        isFeatured: true, // Added this
         isActive: true,
         images: [
           {
@@ -213,11 +230,13 @@ const seedProducts = async () => {
         brand: "Acuvue",
         category: "contact-lenses",
         price: 1199,
+        originalPrice: 1332,
         discount: 10,
         frameColor: "Transparent",
         description: "Hydrating contact lenses for all-day comfort.",
         stock: 120,
         isNewArrival: false,
+        isFeatured: false, // Not featured
         isActive: true,
         images: [
           {
@@ -231,6 +250,11 @@ const seedProducts = async () => {
 
     await Product.insertMany(products);
     console.log("✅ New Products Seeded Successfully");
+    
+    // Check how many featured products were added
+    const featuredCount = await Product.countDocuments({ isFeatured: true });
+    console.log(`🌟 Featured products added: ${featuredCount}`);
+    
     mongoose.connection.close();
   } catch (error) {
     console.log("❌ Seeding Error:", error);
